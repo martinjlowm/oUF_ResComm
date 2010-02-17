@@ -1,6 +1,5 @@
 ﻿local _, ns = ...
 local oUF = ns.oUF or oUF
-assert(oUF, 'oUF_ResComm was unable to locate oUF install')
 
 local libResComm = LibStub("LibResComm-1.0")
 local playerName = UnitName("player")
@@ -45,8 +44,9 @@ end
 oUF:AddElement("ResComm", Update, Enable, Disable)
 
 local ResComm_Update = function(...)
+	print("Test for casting " .. ...)
 	for _, frame in ipairs(oUF.objects) do
-		if frame.unit and frame.ResComm then
+		if frame.unit then
 			Update(frame)
 		end
 	end

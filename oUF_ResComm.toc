@@ -1,10 +1,9 @@
 ## Interface: 30300
 ## Title: oUF_ResComm
-## Notes: Resurrection texture, communicates with CTRA and oRA users.
+## Notes: An attempt to provide a texture on a unitframe when the unit is being ressed.
 ## Author: Guardix
-## Dependencies: oUF
+## RequiredDeps: oUF
 ## OptionalDeps: LibResComm-1.0
-## DefaultState: enabled
 
 embeds.xml
 core.lua
