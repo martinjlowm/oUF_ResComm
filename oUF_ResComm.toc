@@ -1,7 +1,10 @@
 ## Interface: 30300
 ## Title: oUF_ResComm
-## Notes: Callbacks to be used for oUF layouts
+## Notes: Resurrection texture, communicates with CTRA and oRA users.
 ## Author: Guardix
-## RequiredDeps: oUF
+## Dependencies: oUF
+## OptionalDeps: LibResComm-1.0
+## DefaultState: enabled
 
+embeds.xml
 core.lua
