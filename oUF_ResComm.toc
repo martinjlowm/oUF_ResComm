@@ -1,0 +1,7 @@
+## Interface: 30300
+## Title: oUF_ResComm
+## Notes: Callbacks to be used for oUF layouts
+## Author: Guardix
+## RequiredDeps: oUF
+
+core.lua
