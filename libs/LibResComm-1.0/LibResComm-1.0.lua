@@ -138,11 +138,9 @@ function lib.eventFrame:CHAT_MSG_ADDON(prefix, msg, distribution, sender)
 	if sender == playerName then return end
 
 	local target
-
 	for cmd, targetName in msg:gmatch("(%a+)%s?([^#]*)") do
 		-- A lot of garbage can come in, make absolutely sure we have a decent message
 		if cmd == "RES" and targetName ~= "" and targetName ~= UNKNOWN then
-
 			local endTime = select(6, UnitCastingInfo(sender)) or (GetTime() + 10)*1000
 
 			if endTime and targetName then
@@ -215,6 +213,7 @@ Output: Boolean. True when unit is being ressed. False when not.
 
 function lib:IsUnitBeingRessed(unit)
 	for resser, ressed in pairs(activeRes) do
+		
 		if unit == ressed then
 			return true, resser
 		end

@@ -1,6 +1,6 @@
-## Interface: 30300
+﻿## Interface: 30300
 ## Title: oUF_ResComm
-## Notes: An attempt to provide a texture on a unitframe when the unit is being ressed.
+## Notes: A resurrection indicator for oUF unitframes. Uses LibResComm-1.0 to communicate with CTRA/oRA2-3 users.
 ## Author: Guardix
 ## RequiredDeps: oUF
 ## OptionalDeps: LibResComm-1.0
