@@ -1,0 +1,21 @@
+------------------------------------------------------------------------
+r47 | dathrarhek | 2009-04-17 12:55:13 +0000 (Fri, 17 Apr 2009) | 2 lines
+Changed paths:
+   M /trunk/LibResComm-1.0.toc
+
+LibResComm-1.0:
+- TOC Bump
+------------------------------------------------------------------------
+r46 | rabbit | 2009-04-07 11:40:09 +0000 (Tue, 07 Apr 2009) | 1 line
+Changed paths:
+   M /trunk/LibResComm-1.0.lua
+
+Return the resser as a second return from :IsUnitBeingRessed
+------------------------------------------------------------------------
+r45 | dathrarhek | 2008-10-20 14:25:39 +0000 (Mon, 20 Oct 2008) | 2 lines
+Changed paths:
+   M /trunk/LibResComm-1.0.lua
+
+LibResComm-1.0:
+- Typing error. I fail at boolean logic. 
+------------------------------------------------------------------------
