@@ -11,23 +11,52 @@ local oUF = ns.oUF or oUF
 local libResComm = LibStub("LibResComm-1.0")
 local playerName = UnitName("player")
 
-local Update = function(self, event, destUnit)
-	local resComm = self.ResComm
-	local unitName, unitRealm = UnitName(destUnit)
+local duration
+local onUpdate = function(self, elapsed)
+	duration = self.duration + elapsed
 	
-	if unitName and unitRealm and unitRealm ~= "" then
-		unitName = unitName .. "-" .. unitRealm
-	elseif not unitName then
-		unitName = destUnit
+	if duration >= self.endTime then
+		self:Hide()
 	end
 	
+	self.duration = duration
+	self:SetValue(duration)
+end
+
+local Update = function(self, event, destUnit, endTime)
+	local resComm = self.ResComm
+	
 	if resComm then
+		local unitName, unitRealm = UnitName(destUnit)
+		
+		if unitName and unitRealm and unitRealm ~= "" then
+			unitName = unitName .. "-" .. unitRealm
+		elseif not unitName then
+			unitName = destUnit
+		end
+		
 		local beingRessed, resserName = libResComm:IsUnitBeingRessed(unitName)
 		
 		if (beingRessed and not (resComm.OthersOnly and resserName == playerName)) then
 			resComm:Show()
+			
+			if resComm:IsObjectType("Statusbar") then
+				if endTime then
+					resComm.duration = endTime - GetTime()
+					resComm.endTime = endTime
+				
+					resComm:SetScript("OnUpdate", onUpdate)
+				end
+			end
 		else
 			resComm:Hide()
+			
+			if resComm:IsObjectType("Statusbar") then
+				resComm.duration = 0
+				resComm.endTime = 0
+				
+				resComm:SetScript("OnUpdate", nil)
+			end
 		end
 	end
 end
@@ -40,18 +69,22 @@ local Enable = function(self)
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
 		end
 		
+		if resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture() then
+			resComm:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
+		end
+		
 		return true
 	end
 end
 
 oUF:AddElement("ResComm", Update, Enable, nil)
 
-local ResComm_Update = function(event)
+local ResComm_Update = function(event, _, endTime, _)
 	local destUnit
 	for _, frame in ipairs(oUF.objects) do
 		if frame.unit then
 			destUnit = frame.unit
-			Update(frame, event, destUnit)
+			Update(frame, event, destUnit, endTime)
 		end
 	end
 end
