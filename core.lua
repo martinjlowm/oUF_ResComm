@@ -1,8 +1,12 @@
-﻿--[[	
+﻿--[[
 	Elements handled: .ResComm
 	
-	Boolean:
-	 - OthersOnly: Defines whether the player's resurrection triggers the element or not. (Default: nil)
+	Optional:
+	 - .OthersOnly: (boolean) Defines whether the player's resurrection triggers the element or not.
+	   (Default: nil)
+	
+	Functions that can be overridden from within a layout:
+	 - :CustomOnUpdate(elapsed)
 ]]
 
 local _, ns = ...
@@ -38,25 +42,33 @@ local Update = function(self, event, destUnit, endTime)
 		local beingRessed, resserName = libResComm:IsUnitBeingRessed(unitName)
 		
 		if (beingRessed and not (resComm.OthersOnly and resserName == playerName)) then
-			resComm:Show()
-			
 			if resComm:IsObjectType("Statusbar") then
 				if endTime then
-					resComm.duration = endTime - GetTime()
-					resComm.endTime = endTime
-				
-					resComm:SetScript("OnUpdate", onUpdate)
+					local maxValue = endTime - GetTime()
+					
+					resComm.duration = 0
+					resComm.endTime = maxValue
+					resComm:SetMinMaxValues(0, maxValue)
+					resComm:SetValue(0)
+					
+					if resComm.CustomOnUpdate then
+						resComm:SetScript("OnUpdate", resComm.CustomOnUpdate)
+					else
+						resComm:SetScript("OnUpdate", onUpdate)
+					end
 				end
 			end
-		else
-			resComm:Hide()
 			
+			resComm:Show()
+		else
 			if resComm:IsObjectType("Statusbar") then
 				resComm.duration = 0
 				resComm.endTime = 0
 				
 				resComm:SetScript("OnUpdate", nil)
 			end
+			
+			resComm:Hide()
 		end
 	end
 end
@@ -67,9 +79,7 @@ local Enable = function(self)
 	if resComm then		
 		if resComm:IsObjectType("Texture") and not resComm:GetTexture() then
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
-		end
-		
-		if resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture() then
+		elseif resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture() then
 			resComm:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
 		end
 		
