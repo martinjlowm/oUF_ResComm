@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 	Elements handled: .ResComm
 	
 	Optional:
