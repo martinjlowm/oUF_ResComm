@@ -58,7 +58,7 @@ local Update = function(self, event, destUnit, endTime)
 				end
 			end
 			
-			resComm:Show()
+			 resComm:Show()
 		else
 			if resComm:IsObjectType("Statusbar") then
 				resComm.duration = 0
