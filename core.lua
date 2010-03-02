@@ -38,7 +38,7 @@ local Update = function(self, event, destUnit, endTime)
 		elseif not unitName then
 			unitName = destUnit
 		end
-		
+		 
 		local beingRessed, resserName = libResComm:IsUnitBeingRessed(unitName)
 		if beingRessed and not (resComm.OthersOnly and resserName == playerName) then
 			if resComm:IsObjectType("Statusbar") then
