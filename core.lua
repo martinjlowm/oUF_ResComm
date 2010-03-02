@@ -43,7 +43,7 @@ local Update = function(self, event, destUnit, endTime)
 		
 		if beingRessed and not (resComm.OthersOnly and resserName == playerName) then
 			if resComm:IsObjectType("Statusbar") then
-				if endTime and type(endTime) ~= "string" then
+				if endTime then
 					local maxValue = endTime - GetTime()
 					
 					resComm.duration = 0
@@ -89,12 +89,16 @@ end
 
 oUF:AddElement("ResComm", Update, Enable, nil)
 
-local ResComm_Update = function(event, _, endTime)
+local ResComm_Update = function(event, ...)
+	if type(select(2, ...)) == "number" then
+		local endTime = select(2, ...)
+	end
+	
 	local destUnit
 	for _, frame in ipairs(oUF.objects) do
-		if frame.unit then
+		if frame.unit and frame.ResComm then
 			destUnit = frame.unit
-			Update(frame, event, destUnit, endTime)
+			Update(frame, event, destUnit, endTime or nil)
 		end
 	end
 end
