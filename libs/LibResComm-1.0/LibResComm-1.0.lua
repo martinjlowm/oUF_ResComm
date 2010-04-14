@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: LibResComm-1.0
 Revision: $Revision: 46 $
 Author(s): DathRarhek (Polleke) (polleke@gmail.com)

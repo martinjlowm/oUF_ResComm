@@ -1,4 +1,4 @@
-﻿## Interface: 30300
+## Interface: 30300
 ## Title: oUF_ResComm
 ## Notes: A resurrection indicator for oUF unitframes. Uses LibResComm-1.0 to communicate with CTRA/oRA2-3 users.
 ## Author: Guardix
