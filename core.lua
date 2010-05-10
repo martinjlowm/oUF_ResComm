@@ -21,7 +21,7 @@ do
 	onUpdate = function(self, elapsed)
 		duration = self.duration + elapsed
 		
-		if duration >= self.endTime then
+		if (duration >= self.endTime) then
 			self:Hide()
 		end
 		
@@ -33,37 +33,35 @@ end
 local Update = function(self, event, destUnit, endTime)
 	local resComm = self.ResComm
 	
-	if resComm then
+	if (resComm) then
 		local unitName, unitRealm = UnitName(destUnit)
 		
-		if unitName and unitRealm and unitRealm ~= "" then
+		if (unitName and unitRealm and unitRealm ~= "") then
 			unitName = unitName .. "-" .. unitRealm
-		elseif not unitName then
+		elseif (not unitName) then
 			unitName = destUnit
 		end
 		
 		local beingRessed, resserName = libResComm:IsUnitBeingRessed(unitName)
-		if beingRessed and not (resComm.OthersOnly and resserName == playerName) then
-			if resComm:IsObjectType("Statusbar") then
-				if endTime then
-					local maxValue = endTime - GetTime()
-					
-					resComm.duration = 0
-					resComm.endTime = maxValue
-					resComm:SetMinMaxValues(0, maxValue)
-					resComm:SetValue(0)
-					
-					if resComm.CustomOnUpdate then
-						resComm:SetScript("OnUpdate", resComm.CustomOnUpdate)
-					else
-						resComm:SetScript("OnUpdate", onUpdate)
-					end
+		if (beingRessed and (not (resComm.OthersOnly and resserName == playerName))) then
+			if (resComm:IsObjectType("Statusbar") and endTime and (not resComm:GetScript("OnUpdate"))) then
+				local maxValue = endTime - GetTime()
+				
+				resComm.duration = 0
+				resComm.endTime = maxValue
+				resComm:SetMinMaxValues(0, maxValue)
+				resComm:SetValue(0)
+				
+				if (resComm.CustomOnUpdate) then
+					resComm:SetScript("OnUpdate", resComm.CustomOnUpdate)
+				else
+					resComm:SetScript("OnUpdate", onUpdate)
 				end
 			end
 			
 			resComm:Show()
 		else
-			if resComm:IsObjectType("Statusbar") then
+			if (resComm:IsObjectType("Statusbar")) then
 				resComm.duration = 0
 				resComm.endTime = 0
 				
@@ -77,10 +75,10 @@ end
 
 local Enable = function(self)
 	local resComm = self.ResComm
-	if resComm then
-		if resComm:IsObjectType("Texture") and not resComm:GetTexture() then
+	if (resComm) then
+		if (resComm:IsObjectType("Texture") and not resComm:GetTexture()) then
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
-		elseif resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture():GetTexture() then
+		elseif (resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture():GetTexture()) then
 			resComm:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
 		end
 		
@@ -95,7 +93,7 @@ local ResComm_Update = function(event, ...)
 	
 	local destUnit
 	for _, frame in ipairs(oUF.objects) do
-		if frame.unit and frame.ResComm then
+		if (frame.unit and frame.ResComm) then
 			destUnit = frame.unit
 			Update(frame, event, destUnit, endTime)
 		end
