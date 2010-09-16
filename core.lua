@@ -4,9 +4,6 @@
 	Optional:
 	 - .OthersOnly: (boolean) Defines whether the player's resurrection triggers the element or not.
 	   (Default: nil)
-	
-	Functions that can be overridden from within a layout:
-	 - :CustomOnUpdate(elapsed)
 ]]
 
 local _, ns = ...
@@ -52,11 +49,7 @@ local Update = function(self, event, destUnit, endTime)
 				resComm:SetMinMaxValues(0, maxValue)
 				resComm:SetValue(0)
 				
-				if (resComm.CustomOnUpdate) then
-					resComm:SetScript("OnUpdate", resComm.CustomOnUpdate)
-				else
-					resComm:SetScript("OnUpdate", onUpdate)
-				end
+				resComm:SetScript("OnUpdate", onUpdate)
 			end
 			
 			resComm:Show()
@@ -73,9 +66,20 @@ local Update = function(self, event, destUnit, endTime)
 	end
 end
 
+local Path = function(self, ...)
+	return (self.ResComm.Override or Update) (self, ...)
+end
+
+local ForceUpdate = function(element)
+	return Path(element.__owner, "ForceUpdate", element.__owner.unit)
+end
+
 local Enable = function(self)
 	local resComm = self.ResComm
 	if (resComm) then
+		resComm.__owner = self
+		resComm.ForceUpdate = ForceUpdate
+		
 		if (resComm:IsObjectType("Texture") and not resComm:GetTexture()) then
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
 		elseif (resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture():GetTexture()) then
@@ -86,13 +90,13 @@ local Enable = function(self)
 	end
 end
 
-oUF:AddElement("ResComm", Update, Enable, nil)
+oUF:AddElement("ResComm", Path, Enable, nil)
 
 local ResComm_Update = function(event, ...)
 	local endTime = type(select(2, ...)) == "number" and select(2, ...) or nil
 	
 	local destUnit
-	for _, frame in ipairs(oUF.objects) do
+	for _, frame in next, oUF.objects do
 		if (frame.unit and frame.ResComm) then
 			destUnit = frame.unit
 			Update(frame, event, destUnit, endTime)
