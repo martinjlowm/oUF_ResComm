@@ -82,9 +82,9 @@ local isCasting = nil
 local activeRes = {}
 
 local resSpells = {
-	SHAMAN = (GetSpellInfo(20777)),
-	PRIEST = (GetSpellInfo(25435)),
-	PALADIN = (GetSpellInfo(20773)),
+	SHAMAN = (GetSpellInfo(2008)),
+	PRIEST = (GetSpellInfo(2006)),
+	PALADIN = (GetSpellInfo(7328)),
 	DRUID = (GetSpellInfo(50764))
 }
 local combatresSpells = {
