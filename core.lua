@@ -11,6 +11,8 @@ local oUF = ns.oUF or oUF
 
 local libResComm = LibStub("LibResComm-1.0")
 local playerName = UnitName("player")
+local UnitName = UnitName
+local next = next
 
 local onUpdate
 do
@@ -27,20 +29,28 @@ do
 	end
 end
 
-local Update = function(self, event, destUnit, endTime)
-	local resComm = self.ResComm
+local Update = function(self, event, unit, endTime)
+	if (not event or event == "VehicleSwitch") then
+		return
+	end
 	
-	if (resComm) then
-		local unitName, unitRealm = UnitName(destUnit)
-		
-		if (unitName and unitRealm and unitRealm ~= "") then
-			unitName = unitName .. "-" .. unitRealm
-		elseif (not unitName) then
-			unitName = destUnit
+	local resComm = self.ResComm
+	if (not resComm) then
+		return
+	end
+	
+	if (event == "ResComm_CanRes") then
+		if (resComm:IsObjectType("Statusbar")) then
+			resComm:SetMinMaxValues(0, 1)
+			resComm:SetValue(1)
 		end
 		
-		local beingRessed, resserName = libResComm:IsUnitBeingRessed(unitName)
-		if (beingRessed and (not (resComm.OthersOnly and resserName == playerName))) then
+		resComm:Show()
+	elseif (event == "ResComm_Ressed") then
+		resComm:Hide()
+	else
+		local beingRessed = libResComm:IsUnitBeingRessed(UnitName(unit))
+		if (beingRessed) then
 			if (resComm:IsObjectType("Statusbar") and endTime and (not resComm:GetScript("OnUpdate"))) then
 				local maxValue = endTime - GetTime()
 				
@@ -90,19 +100,50 @@ local Enable = function(self)
 	end
 end
 
-oUF:AddElement("ResComm", Path, Enable, nil)
-
-local ResComm_Update = function(event, ...)
-	local endTime = type(select(2, ...)) == "number" and select(2, ...) or nil
-	
-	local destUnit
-	for _, frame in next, oUF.objects do
-		if (frame.unit and frame.ResComm) then
-			destUnit = frame.unit
-			Update(frame, event, destUnit, endTime)
+local Disable = function(self)
+	local resComm = self.ResComm
+	if (resComm) then
+		if (resComm:IsObjectType("Statusbar") and resComm:GetScript("OnUpdate")) then
+			resComm:SetScript("OnUpdate", nil)
 		end
 	end
 end
 
-libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResStart", ResComm_Update)
-libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResEnd", ResComm_Update)
+oUF:AddElement("ResComm", Path, Enable, Disable)
+
+local ResComm_ResStart = function(event, sender, endTime, target)
+	local name
+	for _, frame in next, oUF.objects do
+		name = frame.unit and UnitName(frame.unit)
+		if (name == target and frame.ResComm) then
+			if (not (frame.ResComm.OthersOnly and sender == playerName)) then
+				Path(frame, event, frame.unit, endTime)
+			end
+		end
+	end
+end
+
+local ResComm_ResEnd = function(event, sender, target)
+	local name
+	for _, frame in next, oUF.objects do
+		name = frame.unit and UnitName(frame.unit)
+		if (name == target and frame.ResComm) then
+			Path(frame, event, frame.unit)
+		end
+	end
+end
+
+local ResComm_Shared = function(event, target)
+	local name
+	for _, frame in next, oUF.objects do
+		name = frame.unit and UnitName(frame.unit)
+		if (name == target and frame.ResComm) then
+			Path(frame, event, frame.unit)
+		end
+	end
+end
+
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_CanRes", ResComm_Shared)
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_Ressed", ResComm_Shared)
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResStart", ResComm_ResStart)
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResEnd", ResComm_ResEnd)
