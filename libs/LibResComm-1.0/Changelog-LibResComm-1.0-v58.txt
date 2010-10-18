@@ -1,0 +1,49 @@
+------------------------------------------------------------------------
+r58 | myrroddin | 2010-09-25 13:40:23 +0000 (Sat, 25 Sep 2010) | 1 line
+Changed paths:
+   A /tags/v58 (from /trunk:57)
+
+Tagging as v58
+------------------------------------------------------------------------
+r56 | myrroddin | 2010-09-25 12:58:45 +0000 (Sat, 25 Sep 2010) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/LibResComm-1.0.toc
+
+Blasphemy with the .toc and .pkgmeta
+------------------------------------------------------------------------
+r54 | myrroddin | 2010-09-22 00:03:37 +0000 (Wed, 22 Sep 2010) | 1 line
+Changed paths:
+   M /trunk/LibResComm-1.0/LibResComm-1.0.lua
+
+Fixed ticket #4 Unfinished Capture
+------------------------------------------------------------------------
+r53 | myrroddin | 2010-09-21 01:03:30 +0000 (Tue, 21 Sep 2010) | 1 line
+Changed paths:
+   M /trunk/LibResComm-1.0.toc
+
+Adjusted .toc for Libs folder so CBH and LS load properly
+------------------------------------------------------------------------
+r52 | myrroddin | 2010-09-21 00:49:28 +0000 (Tue, 21 Sep 2010) | 6 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   D /trunk/CallbackHandler-1.0
+   M /trunk/LibResComm-1.0/LibResComm-1.0.lua
+   M /trunk/LibResComm-1.0/lib.xml
+   M /trunk/LibResComm-1.0.toc
+   D /trunk/LibStub
+   M /trunk/lib.xml
+
+Disable no-lib creation in .pkgmeta
+Set CallbackHandler-1.0 and LibStub repository paths in .pkgmeta and delete embedded folders
+Fixed spellIDs for Cataclysm compatibility
+Registered UNIT_SPELLCAST_FAILED/INTERRUPTED and pointed them to UNIT_SPELLCAST_STOP function (ResComm_Ressed was firing inappropriately)
+With Phanx's help, added ticket #2 distinguish between CANRES/self-res types in ResComm_CanRes (Soulstone, Twisting Nether, Reincarnate). These are localized. More info coming soon
+Compatible-With-40000 tag added to .toc
+------------------------------------------------------------------------
+r51 | myrroddin | 2010-07-08 08:51:03 +0000 (Thu, 08 Jul 2010) | 1 line
+Changed paths:
+   M /trunk/LibResComm-1.0/LibResComm-1.0.lua
+
+SVN keyword: Revision fix
+------------------------------------------------------------------------

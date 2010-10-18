@@ -1,0 +1,21 @@
+------------------------------------------------------------------------
+r15 | mikk | 2010-08-09 00:48:56 +0000 (Mon, 09 Aug 2010) | 1 line
+Changed paths:
+   A /tags/1.0.6 (from /trunk:14)
+
+Tagging as 1.0.6
+------------------------------------------------------------------------
+r14 | mikk | 2010-08-09 00:43:38 +0000 (Mon, 09 Aug 2010) | 1 line
+Changed paths:
+   M /trunk/CallbackHandler-1.0
+   M /trunk/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   M /trunk/CallbackHandler-1.0.toc
+
+Ticket 5: Allow 'self or addonId' to be a thread (coroutine)
+------------------------------------------------------------------------
+r13 | nevcairiel | 2009-12-06 21:56:53 +0000 (Sun, 06 Dec 2009) | 1 line
+Changed paths:
+   M /trunk/CallbackHandler-1.0/CallbackHandler-1.0.lua
+
+Don't upvalue geterrorhandler since that could impair debugging/testing.
+------------------------------------------------------------------------
