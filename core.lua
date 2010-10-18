@@ -35,6 +35,7 @@ local Update = function(self, event, unit)
 	
 	if (not UnitIsDead(unit)) then
 		resComm:Hide()
+		
 		return
 	end
 	
@@ -80,7 +81,7 @@ local Enable = function(self)
 		resComm.ForceUpdate = ForceUpdate
 		
 		resComm:RegisterEvent("UNIT_HEALTH", Path)
-		resComm:Hide()
+		
 		if (resComm:IsObjectType("Texture") and not resComm:GetTexture()) then
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
 		elseif (resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture():GetTexture()) then
