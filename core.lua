@@ -15,7 +15,6 @@ local GetTime = GetTime
 local UnitName = UnitName
 local UnitIsDead = UnitIsDead
 local next = next
-local select = select
 
 local onUpdate
 do
@@ -108,9 +107,9 @@ oUF:AddElement("ResComm", Path, Enable, Disable)
 
 local ResComm_Shared = function(event, ...)
 	local sender, endTime, target
-	if (select("#", ...) == 3) then
+	if (event == "ResComm_ResStart") then
 		sender, endTime, target = ...
-	elseif (select("#", ...) == 2) then
+	elseif (event == "ResComm_ResEnd") then
 		sender, target = ...
 	else
 		target = ...
