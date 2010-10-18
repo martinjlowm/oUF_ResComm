@@ -29,7 +29,6 @@ end
 
 local Update = function(self, event, unit)
 	local resComm = self.ResComm
-	
 	if (not resComm) then
 		return
 	end
@@ -106,7 +105,7 @@ end
 
 oUF:AddElement("ResComm", Path, Enable, Disable)
 
-ResComm_Shared = function(event, ...)
+local ResComm_Shared = function(event, ...)
 	local sender, endTime, target
 	if (select("#", ...) == 3) then
 		sender, endTime, target = ...
