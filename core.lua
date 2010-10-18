@@ -15,6 +15,7 @@ local GetTime = GetTime
 local UnitName = UnitName
 local UnitIsDead = UnitIsDead
 local next = next
+local select = select
 
 local onUpdate
 do
