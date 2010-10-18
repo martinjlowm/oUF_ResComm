@@ -13,6 +13,7 @@ local libResComm = LibStub("LibResComm-1.0")
 local playerName = UnitName("player")
 local GetTime = GetTime
 local UnitName = UnitName
+local UnitIsDead = UnitIsDead
 local next = next
 
 local onUpdate
@@ -95,7 +96,7 @@ end
 local Disable = function(self)
 	local resComm = self.ResComm
 	if (resComm) then
-		resComm:UnregisterEvent("UNIT_HEALTH")
+		resComm:UnregisterEvent("UNIT_HEALTH", Path)
 		
 		if (resComm:IsObjectType("Statusbar") and resComm:GetScript("OnUpdate")) then
 			resComm:SetScript("OnUpdate", nil)
