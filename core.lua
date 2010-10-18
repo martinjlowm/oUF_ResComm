@@ -11,6 +11,7 @@ local oUF = ns.oUF or oUF
 
 local libResComm = LibStub("LibResComm-1.0")
 local playerName = UnitName("player")
+local GetTime = GetTime
 local UnitName = UnitName
 local next = next
 
@@ -20,59 +21,47 @@ do
 	onUpdate = function(self, elapsed)
 		duration = self.duration + elapsed
 		
-		if (duration >= self.endTime) then
-			self:Hide()
-		end
-		
 		self.duration = duration
 		self:SetValue(duration)
 	end
 end
 
-local Update = function(self, event, unit, endTime)
-	if (not event or event == "VehicleSwitch") then
-		return
-	end
-	
+local Update = function(self, event, unit)
 	local resComm = self.ResComm
+	
 	if (not resComm) then
 		return
 	end
 	
-	if (event == "ResComm_CanRes") then
+	if (not UnitIsDead(unit)) then
+		resComm:Hide()
+		return
+	end
+	
+	if (event == "ResComm_CanRes" or event == "ResComm_Ressed") then
 		if (resComm:IsObjectType("Statusbar")) then
 			resComm:SetMinMaxValues(0, 1)
 			resComm:SetValue(1)
 		end
 		
 		resComm:Show()
-	elseif (event == "ResComm_Ressed") then
+	elseif (event == "ResComm_ResExpired") then
 		resComm:Hide()
-	else
-		local beingRessed = libResComm:IsUnitBeingRessed(UnitName(unit))
-		if (beingRessed) then
-			if (resComm:IsObjectType("Statusbar") and endTime and (not resComm:GetScript("OnUpdate"))) then
-				local maxValue = endTime - GetTime()
-				
-				resComm.duration = 0
-				resComm.endTime = maxValue
-				resComm:SetMinMaxValues(0, maxValue)
-				resComm:SetValue(0)
-				
-				resComm:SetScript("OnUpdate", onUpdate)
-			end
+	elseif (event == "ResComm_ResStart") then
+		if (resComm:IsObjectType("Statusbar")) then
+			resComm.duration = 0
+			resComm:SetValue(0)
 			
-			resComm:Show()
-		else
-			if (resComm:IsObjectType("Statusbar")) then
-				resComm.duration = 0
-				resComm.endTime = 0
-				
-				resComm:SetScript("OnUpdate", nil)
-			end
-			
-			resComm:Hide()
+			resComm:SetScript("OnUpdate", onUpdate)
 		end
+		
+		resComm:Show()
+	elseif (event == "ResComm_ResEnd") then
+		if (resComm:IsObjectType("Statusbar")) then
+			resComm:SetScript("OnUpdate", nil)
+		end
+		
+		resComm:Hide()
 	end
 end
 
@@ -90,6 +79,8 @@ local Enable = function(self)
 		resComm.__owner = self
 		resComm.ForceUpdate = ForceUpdate
 		
+		resComm:RegisterEvent("UNIT_HEALTH", Path)
+		resComm:Hide()
 		if (resComm:IsObjectType("Texture") and not resComm:GetTexture()) then
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
 		elseif (resComm:IsObjectType("Statusbar") and not resComm:GetStatusBarTexture():GetTexture()) then
@@ -103,6 +94,8 @@ end
 local Disable = function(self)
 	local resComm = self.ResComm
 	if (resComm) then
+		resComm:UnregisterEvent("UNIT_HEALTH")
+		
 		if (resComm:IsObjectType("Statusbar") and resComm:GetScript("OnUpdate")) then
 			resComm:SetScript("OnUpdate", nil)
 		end
@@ -111,39 +104,37 @@ end
 
 oUF:AddElement("ResComm", Path, Enable, Disable)
 
-local ResComm_ResStart = function(event, sender, endTime, target)
-	local name
+ResComm_Shared = function(event, ...)
+	local sender, endTime, target
+	if (select("#", ...) == 3) then
+		sender, endTime, target = ...
+	elseif (select("#", ...) == 2) then
+		sender, target = ...
+	else
+		target = ...
+	end
+	
+	local name, resComm
 	for _, frame in next, oUF.objects do
 		name = frame.unit and UnitName(frame.unit)
-		if (name == target and frame.ResComm) then
-			if (not (frame.ResComm.OthersOnly and sender == playerName)) then
-				Path(frame, event, frame.unit, endTime)
+		resComm = frame.ResComm
+		if (name == target and resComm) then
+			if (not sender or not (resComm.OthersOnly and sender == playerName)) then
+				if (endTime and resComm:IsObjectType("Statusbar")) then
+					local maxValue = endTime - GetTime()
+					
+					resComm.endTime = maxValue
+					resComm:SetMinMaxValues(0, maxValue)
+				end
+				
+				Path(frame, event, frame.unit)
 			end
-		end
-	end
-end
-
-local ResComm_ResEnd = function(event, sender, target)
-	local name
-	for _, frame in next, oUF.objects do
-		name = frame.unit and UnitName(frame.unit)
-		if (name == target and frame.ResComm) then
-			Path(frame, event, frame.unit)
-		end
-	end
-end
-
-local ResComm_Shared = function(event, target)
-	local name
-	for _, frame in next, oUF.objects do
-		name = frame.unit and UnitName(frame.unit)
-		if (name == target and frame.ResComm) then
-			Path(frame, event, frame.unit)
 		end
 	end
 end
 
 libResComm.RegisterCallback("oUF_ResComm", "ResComm_CanRes", ResComm_Shared)
 libResComm.RegisterCallback("oUF_ResComm", "ResComm_Ressed", ResComm_Shared)
-libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResStart", ResComm_ResStart)
-libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResEnd", ResComm_ResEnd)
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResExpired", ResComm_Shared)
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResStart", ResComm_Shared)
+libResComm.RegisterCallback("oUF_ResComm", "ResComm_ResEnd", ResComm_Shared)
