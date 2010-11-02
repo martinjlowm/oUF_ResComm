@@ -9,12 +9,13 @@
 local _, ns = ...
 local oUF = ns.oUF or oUF
 
+local LibStub = _G.LibStub
 local libResComm = LibStub("LibResComm-1.0")
+local GetTime = _G.GetTime
+local UnitName = _G.UnitName
 local playerName = UnitName("player")
-local GetTime = GetTime
-local UnitName = UnitName
-local UnitIsDead = UnitIsDead
-local next = next
+local UnitIsDead = _G.UnitIsDead
+local next = _G.next
 
 local onUpdate
 do

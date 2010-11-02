@@ -1,15 +1,35 @@
 --[[
 	Name: LibResComm-1.0
-	Revision: $Revision: 54 $
+	Revision: $Revision: 60 $
 	Author(s): DathRarhek (Polleke) (polleke@gmail.com)
+	Continued for Cataclysm by Myrroddin and Phanx
 	Documentation: http://www.wowace.com/index.php/LibResComm-1.0
 	SVN:  svn://svn.wowace.com/wow/librescomm-1-0/mainline/trunk
 	Description: Keeps track of resurrection spells cast in the raid group
 	Dependencies: LibStub, CallbackHandler-1.0
 ]]
 
+-- localize globals
+local _G = genfenv(0)
+local oRA = _G.oRA
+local CT_RA_Stats = _G.CT_RA_Stats
+local GameTooltipTextLeft1 = _G.GameTooltipTextLeft1
+local GetTime = _G.GetTime
+local HasSoulstone = _G.HasSoulstone
+local IsInInstance = _G.IsInInstance
+local pairs = _G.pairs
+local select = _G.select
+local SendAddonMessage = _G.SendAddonMessage
+local StaticPopup_FindVisible = _G.StaticPopup_FindVisible
+local StaticPopupDialogs = _G.StaticPopupDialogs
+local string = _G.string
+local UnitCastingInfo = _G.UnitCastingInfo
+local UNKNOWN = _G.UNKNOWN
+local WorldFrame = _G.WorldFrame
+local LibStub = _G.LibStub
+
 local MAJOR_VERSION = "LibResComm-1.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 54 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 60 $"):match("%d+"))
 
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -127,7 +147,7 @@ local isCasting = nil
 -- Tracking resses
 local activeRes = {}
 
-local resSpell, combatresSpell -- avoid creating tables we're just going to discard immediately
+local resSpell, combatResSpell -- avoid creating tables we're just going to discard immediately
 if playerClass == "DRUID" then
 	resSpell = GetSpellInfo(50769) -- Revive
 	combatResSpell = GetSpellInfo(20484) -- Rebirth
@@ -164,7 +184,7 @@ end
 
 function lib.eventFrame:UNIT_SPELLCAST_START(unit, spellName)
 	if unit ~= "player" then return end
-	if spellName ~= resSpell and spellName ~= combatresSpell then return end
+	if spellName ~= resSpell and spellName ~= combatResSpell then return end
 
 	isCasting = true
 

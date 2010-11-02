@@ -1,0 +1,21 @@
+------------------------------------------------------------------------
+r61 | myrroddin | 2010-11-02 10:21:32 +0000 (Tue, 02 Nov 2010) | 1 line
+Changed paths:
+   A /tags/61 (from /trunk:60)
+
+Tagging as 61
+------------------------------------------------------------------------
+r60 | myrroddin | 2010-11-02 10:14:34 +0000 (Tue, 02 Nov 2010) | 1 line
+Changed paths:
+   M /trunk/LibResComm-1.0/LibResComm-1.0.lua
+
+localize global variables and APIs
+------------------------------------------------------------------------
+r59 | myrroddin | 2010-10-14 00:13:27 +0000 (Thu, 14 Oct 2010) | 2 lines
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/LibResComm-1.0.toc
+
+bump .toc
+clean up .toc and .pkgmeta
+------------------------------------------------------------------------
