@@ -89,6 +89,8 @@ local Enable = function(self)
 			resComm:SetStatusBarTexture([=[Interface\TargetingFrame\UI-StatusBar]=])
 		end
 		
+		resComm:Hide()
+		
 		return true
 	end
 end

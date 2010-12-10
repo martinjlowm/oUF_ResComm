@@ -1,6 +1,6 @@
 --[[
 	Name: LibResComm-1.0
-	Revision: $Revision: 60 $
+	Revision: $Revision: 63 $
 	Author(s): DathRarhek (Polleke) (polleke@gmail.com)
 	Continued for Cataclysm by Myrroddin and Phanx
 	Documentation: http://www.wowace.com/index.php/LibResComm-1.0
@@ -9,27 +9,8 @@
 	Dependencies: LibStub, CallbackHandler-1.0
 ]]
 
--- localize globals
-local _G = genfenv(0)
-local oRA = _G.oRA
-local CT_RA_Stats = _G.CT_RA_Stats
-local GameTooltipTextLeft1 = _G.GameTooltipTextLeft1
-local GetTime = _G.GetTime
-local HasSoulstone = _G.HasSoulstone
-local IsInInstance = _G.IsInInstance
-local pairs = _G.pairs
-local select = _G.select
-local SendAddonMessage = _G.SendAddonMessage
-local StaticPopup_FindVisible = _G.StaticPopup_FindVisible
-local StaticPopupDialogs = _G.StaticPopupDialogs
-local string = _G.string
-local UnitCastingInfo = _G.UnitCastingInfo
-local UNKNOWN = _G.UNKNOWN
-local WorldFrame = _G.WorldFrame
-local LibStub = _G.LibStub
-
 local MAJOR_VERSION = "LibResComm-1.0"
-local MINOR_VERSION = 90000 + tonumber(("$Revision: 60 $"):match("%d+"))
+local MINOR_VERSION = 90000 + tonumber(("$Revision: 63 $"):match("%d+"))
 
 local lib = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
 if not lib then return end
@@ -59,8 +40,8 @@ local LOCALE = GetLocale()
 if LOCALE == "deDE" then
 	L["Soulstone"] = "Seelenstein"
 --	L["Use Soulstone"] = "" -- obviously, uncomment these when they get translations
---	L["Reincarnate"] = ""
---	L["Twisting Nether"] = ""
+	L["Reincarnate"] = "Reinkarnation"
+	L["Twisting Nether"] = "Wirbelnder Nether"
 elseif LOCALE == "esES" or LOCALE == "esMX" then
 	L["Soulstone"] = "Piedra de alma"
 --	L["Use Soulstone"] = ""
@@ -78,19 +59,19 @@ elseif LOCALE == "ruRU" then
 --	L["Twisting Nether"] = ""
 elseif LOCALE == "koKR" then
 	L["Soulstone"] = "영혼석"
---	L["Use Soulstone"] = ""
---	L["Reincarnate"] = ""
---	L["Twisting Nether"] = ""
+	L["Use Soulstone"] = "영혼석 사용"
+	L["Reincarnate"] = "윤회"
+	L["Twisting Nether"] = "뒤틀린 황천"
 elseif LOCALE == "zhCN" then
 	L["Soulstone"] = "灵魂石"
---	L["Use Soulstone"] = ""
+	L["Use Soulstone"] = "使用灵魂石"
 --	L["Reincarnate"] = ""
---	L["Twisting Nether"] = ""
+	L["Twisting Nether"] = "扭曲虚空"
 elseif LOCALE == "zhTW" then
 	L["Soulstone"] = "靈魂石"
---	L["Use Soulstone"] = ""
+	L["Use Soulstone"] = "靈魂石復活效果"
 --	L["Reincarnate"] = ""
---	L["Twisting Nether"] = ""
+	L["Twisting Nether"] = "扭曲虛空"
 end
 
 local soulstoneToken = {
@@ -176,10 +157,7 @@ end
 function lib.eventFrame:UNIT_SPELLCAST_SENT(unit, _, _, targetName)
 	if unit ~= "player" then return end
 
-	local real_target, realm = string.split("-", targetName, 2)
-
-	-- If the target is on the current realm, real_target will be nil - set it as targetName.
-	sentTargetName = real_target or targetName
+	sentTargetName = targetName:match("^([^%-]+)")
 end
 
 function lib.eventFrame:UNIT_SPELLCAST_START(unit, spellName)
@@ -209,19 +187,15 @@ function lib.eventFrame:UNIT_SPELLCAST_START(unit, spellName)
 	activeRes[playerName] = target
 
 	lib.Callbacks:Fire("ResComm_ResStart", playerName, endTime, target)
-	commSend(string.format("RES %s", target))
+	commSend(("RES %s"):format(target))
 end
 
 function lib.eventFrame:CHAT_MSG_ADDON(prefix, msg, distribution, sender)
 	if prefix ~= "CTRA" then return end
 	if sender == playerName then return end
+	sender = sender:match("^([^%-]+)")
 
 	local target
-	local real_sender, realm = string.split("-", sender, 2)
-
-	-- if the sender is on the current realm, real_sender will be nil - set it to sender
-	sender = real_sender or sender
-
 	for cmd, targetName in msg:gmatch("(%a+)%s?([^#]*)") do
 		-- A lot of garbage can come in, make absolutely sure we have a decent message
 		if cmd == "RES" and targetName ~= "" and targetName ~= UNKNOWN then
@@ -366,7 +340,7 @@ function lib:start()
 
 	worldFrameHook = WorldFrame:GetScript("OnMouseDown")
 	if not worldFrameHook then
-		worldFrameHook = lib.noop;
+		worldFrameHook = lib.noop
 	end
 
 	WorldFrame:SetScript("OnMouseDown", function(...)
