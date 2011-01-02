@@ -35,6 +35,10 @@ local Update = function(self, event, unit)
 	end
 	
 	if (not UnitIsDead(unit)) then
+		if (resComm:IsEventRegistered("UNIT_HEALTH")) then
+			resComm:UnregisterEvent("UNIT_HEALTH", Path)
+		end
+		
 		resComm:Hide()
 		
 		return
@@ -45,6 +49,8 @@ local Update = function(self, event, unit)
 			resComm:SetMinMaxValues(0, 1)
 			resComm:SetValue(1)
 		end
+		
+		resComm:RegisterEvent("UNIT_HEALTH", Path)
 		
 		resComm:Show()
 	elseif (event == "ResComm_ResExpired") then
@@ -80,8 +86,6 @@ local Enable = function(self)
 	if (resComm) then
 		resComm.__owner = self
 		resComm.ForceUpdate = ForceUpdate
-		
-		resComm:RegisterEvent("UNIT_HEALTH", Path)
 		
 		if (resComm:IsObjectType("Texture") and not resComm:GetTexture()) then
 			resComm:SetTexture([=[Interface\Icons\Spell_Holy_Resurrection]=])
